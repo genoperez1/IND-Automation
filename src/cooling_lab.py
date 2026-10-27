@@ -7,7 +7,7 @@ import argparse
 class CoolingPlant:
     temperature: float = 28.0
     setpoint: float = 24.0
-    high_alarm: float = 30.0
+    high_alarm: float = 27.0
     hysteresis: float = 1.0
     pump_running: bool = False
     pump_fault: bool = False
