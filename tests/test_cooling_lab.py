@@ -1,7 +1,6 @@
 import unittest
 from src.cooling_lab import CoolingPlant
 
-
 class CoolingPlantTests(unittest.TestCase):
     def test_high_temp_starts_pump(self):
         p = CoolingPlant(temperature=28)
@@ -30,7 +29,6 @@ class CoolingPlantTests(unittest.TestCase):
     def test_invalid_scan_interval(self):
         with self.assertRaises(ValueError):
             CoolingPlant().scan(dt=0)
-
 
 if __name__ == '__main__':
     unittest.main()
