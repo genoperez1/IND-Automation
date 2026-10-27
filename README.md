@@ -1,32 +1,91 @@
-# Data Center Automation Academy
+# Data Center Automation Academy — Windows Edition
 
-A **simulation-only** educational repository for learning PLC programming, SCADA, and data center automation. No interfaces to real equipment.
+A **simulation-only** learning path for PLC concepts, SCADA, and data center automation on Windows 10/11. No interfaces to live equipment.
+
+> This is the Windows learning branch (`windows-setup`). The original work on `main`, `geno-dev`, and `elijah-dev` remains intact.
 
 ## Lab 01 — Cooling control basics
 
-A temperature controller starts a simulated cooling pump at or above 25°C and stops it at or below 23°C. Between those values, it maintains the previous state (hysteresis). Pump and sensor faults stop the pump and raise alarms. This is an educational control example, **not** a recommended real-world equipment safety strategy.
+Start from a clean Windows environment, run a simple Python cooling plant, inspect pump switching with hysteresis, and simulate faults.
 
-### Requirements
-- macOS, Python 3.10+; no third-party Python packages
-- VS Code recommended
+### Prerequisites
+- Windows 10 or 11
+- Python 3.10 or newer from [python.org](https://www.python.org/downloads/windows/) (enable the Python launcher or add Python to PATH)
+- [Git for Windows](https://git-scm.com/downloads/win)
+- [Visual Studio Code](https://code.visualstudio.com/) and the Microsoft Python extension
 
-### Run
-```bash
-python3 -m src.cooling_lab --steps 60
-python3 -m src.cooling_lab --steps 100 --pump-fault-at 20
-python3 -m src.cooling_lab --steps 100 --sensor-fault-at 20
-python3 -m unittest discover -s tests -v
+No third-party Python packages required for Lab 01.
+
+### 1. Clone the Windows branch
+
+Open **PowerShell** (or VS Code's PowerShell terminal):
+
+```powershell
+git clone --branch windows-setup https://github.com/genoperez1/IND-Automation.git
+cd IND-Automation
+git status
 ```
 
-### Tasks
-1. Draw a controller/sensor/pump/block diagram.
-2. Explain the distinction between process variable, setpoint, hysteresis, and alarm threshold.
-3. Run a baseline, pump fault, and sensor fault. Write observations in `docs/lab01-observations.md`.
-4. Modify the high-alarm threshold to 27°C; run tests and explain the outcome.
-5. **Challenge:** Add a `manual_reset_required` latched fault mode and new unit tests. Keep actual equipment disconnected.
+Already have the repository locally?
 
-### Passing criteria
-All six existing tests pass; you can explain every transition; at least three observations are documented; you complete a fault scenario and discuss safe fallback behavior.
+```powershell
+git fetch origin
+git switch windows-setup
+git pull --ff-only origin windows-setup
+```
 
-## Next steps
-Introduce PLC-style scan logic and Structured Text; exchange simulator data over a local-only simulated protocol; connect Ignition for tags, trending, alarms and an HMI. Do not deploy this toy logic to physical equipment.
+Save/commit any local work before switching branches.
+
+### 2. Check Python and run the simulation
+
+```powershell
+py --version
+py -m src.cooling_lab --steps 60
+py -m src.cooling_lab --steps 100 --pump-fault-at 20
+py -m src.cooling_lab --steps 100 --sensor-fault-at 20
+py -m unittest discover -s tests -v
+```
+
+If the `py` launcher is unavailable, use `python` instead after confirming `python --version` works. Run these commands from the repository root.
+
+All **six baseline tests** should pass.
+
+### 3. Understand the simulation
+
+- The pump turns on at or above 25°C (24°C setpoint + 1°C hysteresis).
+- The pump turns off at or below 23°C (24°C setpoint - 1°C hysteresis).
+- Between 23°C and 25°C, pump state stays unchanged.
+- A pump fault or invalid sensor inhibits the simulated pump and raises an alarm.
+- The default high-temperature alarm threshold is 30°C.
+
+This is a teaching model, **not** a real-world equipment safety strategy. Production cooling controls require engineered safety review and equipment-specific interlocks.
+
+### 4. Complete the lab
+
+1. Draw a block diagram: temperature sensor → controller → simulated pump → thermal plant.
+2. Explain process variable, setpoint, hysteresis, and alarm threshold.
+3. Run baseline, pump-fault, and sensor-fault cases; record results in `docs/lab01-observations.md`.
+4. Change `high_alarm` in `src/cooling_lab.py` from 30°C to 27°C; re-run tests and document what changes.
+5. **Challenge:** implement a `manual_reset_required` latched-fault mode and add unit tests.
+
+**Passing criteria:** Six original tests pass; you can explain every switching transition; at least three observations are recorded; a fault scenario and simulated fallback behavior are discussed.
+
+## Git workflow for the Windows branch
+
+```powershell
+git status
+git switch windows-setup
+git add .
+git commit -m "Complete Lab 01 observations"
+git push -u origin windows-setup
+```
+
+Use a separate feature branch for experimental work when collaborating. Do not force-push shared branches.
+
+## Roadmap
+
+Lab 01: Python cooling simulation and faults → PLC-style scan logic and Structured Text → local-only simulated communications → Ignition tags, alarms, trends, and HMI. Later labs will document both Windows-native tools and macOS equivalents where available.
+
+## Important safety boundary
+
+Only use simulated/local data. Never connect these examples to physical PLCs, live data-center systems, or operational networks.
