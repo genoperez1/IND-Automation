@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 import argparse
 
+
 @dataclass
 class CoolingPlant:
     temperature: float = 28.0
@@ -16,14 +17,13 @@ class CoolingPlant:
     def scan(self, dt: float = 1.0) -> dict:
         if dt <= 0 or dt > 10:
             raise ValueError('dt must be between 0 and 10 seconds')
-        # Fail-safe simulation: an invalid sensor or fault inhibits the pump.
+        # Simulation fallback only; not a real equipment safety strategy.
         if self.pump_fault or not self.sensor_valid:
             self.pump_running = False
         elif self.temperature >= self.setpoint + self.hysteresis:
             self.pump_running = True
         elif self.temperature <= self.setpoint - self.hysteresis:
             self.pump_running = False
-        # Simplified thermal dynamics; not a physical equipment design model.
         heat_gain = 0.025 * (self.ambient - self.temperature)
         cooling = 0.22 if self.pump_running else 0.0
         self.temperature += dt * (heat_gain - cooling)
@@ -56,6 +56,7 @@ def main() -> None:
               f"high_alarm={result['high_temperature_alarm']} "
               f"pump_fault={result['pump_fault_alarm']} "
               f"sensor_fault={result['sensor_fault_alarm']}")
+
 
 if __name__ == '__main__':
     main()

@@ -1,13 +1,24 @@
-# Lab 01 observations
+# Lab 01 — Windows observations
+
+**Environment:** Windows version: ____  Python version: ____  Date: ____
 
 ## Baseline
-What did temperature and pump state do? Why?
+Command: `py -m src.cooling_lab --steps 60`
+
+What happened to the temperature and pump state? What explains the transitions?
 
 ## Pump fault at scan 20
-What changed? What should an operator see?
+Command: `py -m src.cooling_lab --steps 100 --pump-fault-at 20`
+
+What changed? Which alarm appears? What should an operator see?
 
 ## Sensor fault at scan 20
-Why is a bad sensor different from a valid high temperature?
+Command: `py -m src.cooling_lab --steps 100 --sensor-fault-at 20`
+
+Why is an invalid sensor different from a measured high temperature?
+
+## Changed high-alarm threshold
+After changing `high_alarm` from 30°C to 27°C, which observations changed? Did all six tests still pass?
 
 ## Engineering notes
-What additional redundancy, safety interlocks, equipment permissives or supervisory alarms would a real plant require?
+What redundancy, hardwired interlocks, safe-state definitions, and supervisory alarms would an engineered production system require?
